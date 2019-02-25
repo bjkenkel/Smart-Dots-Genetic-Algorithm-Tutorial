@@ -27,12 +27,12 @@ class Population {
 
   //-------------------------------------------------------------------------------------------------------------------------------
   //update all dots 
-  void update() {
+  void update(Obstacle[] walls) {
     for (int i = 0; i< dots.length; i++) {
       if (dots[i].brain.step > minStep) {//if the dot has already taken more steps than the best dot has taken to reach the goal
         dots[i].dead = true;//then it dead
       } else {
-        dots[i].update();
+        dots[i].update(walls);
       }
     }
   }
@@ -44,7 +44,6 @@ class Population {
       dots[i].calculateFitness();
     }
   }
-
 
   //------------------------------------------------------------------------------------------------------------------------------------
   //returns whether all the dots are either dead or have reached the goal
@@ -58,10 +57,7 @@ class Population {
     return true;
   }
 
-
-
   //-------------------------------------------------------------------------------------------------------------------------------------
-
   //gets the next generation of dots
   void naturalSelection() {
     Dot[] newDots = new Dot[dots.length];//next gen
@@ -81,6 +77,7 @@ class Population {
 
     dots = newDots.clone();
     gen ++;
+    println("generation:", gen);
   }
 
 
@@ -94,7 +91,6 @@ class Population {
   }
 
   //-------------------------------------------------------------------------------------------------------------------------------------
-
   //chooses dot from the population to return randomly(considering fitness)
 
   //this function works by randomly choosing a value between 0 and the sum of all the fitnesses
@@ -139,11 +135,12 @@ class Population {
     }
 
     bestDot = maxIndex;
+    println(" max fitness:", max);
 
     //if this dot reached the goal then reset the minimum number of steps it takes to get to the goal
     if (dots[bestDot].reachedGoal) {
       minStep = dots[bestDot].brain.step;
-      println("step:", minStep);
+      println(" steps:", minStep);
     }
   }
 }
